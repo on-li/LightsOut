@@ -6,4 +6,7 @@
     <color name="black">#000</color>
     <color name="beige_bg">#ede2c2</color>
     <color name="grey_font">#5E6F75</color>
+    <color name="red">#F00</color>
+    <color name="orange">#F80</color>
+    <color name="green">#0A0</color>
 </resources>

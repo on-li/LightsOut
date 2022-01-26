@@ -5,4 +5,9 @@
     <string name="secret_congrats">Congrats! You found the cheat code!</string>
     <string name="instructions">TURN OFF ALL THE LIGHTS!</string>
     <string name="num_presses">Number of Presses: %d</string>0
+    <string name="help_instructions">TURN OFF ALL THE LIGHTS TO WIN!</string>
+    <string name="light_bulb">Light bulb</string>
+    <string name="help_button">Help</string>
+    <string name="color_button">Change Color</string>
+    <string name="choose_color">Choose a color:</string>
 </resources>
