@@ -1,5 +1,6 @@
 package com.zybooks.lightsout.Controller;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -8,6 +9,10 @@ import android.widget.GridLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -21,10 +26,11 @@ public class MainActivity extends AppCompatActivity {
     private GridLayout mLightGrid;
     private int mLightOnColor;
     private int mLightOffColor;
+    private int mLightOnColorId;
 
     private int mPressCount;
     private int mSecretCounter;
-    private boolean isSecretOn;
+    //private boolean isSecretOn;
 
     private final String GAME_STATE = "gameState";
 
@@ -33,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mLightOnColorId = R.color.yellow;
         mLightGrid = findViewById(R.id.light_grid);
 
         mLightOnColor = ContextCompat.getColor(this, R.color.yellow);
@@ -62,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void startGame() {
         displayPressCount(0);
-        isSecretOn = false;
+        //isSecretOn = false;
         mPressCount = 0;
         mSecretCounter = 0;
         mGame.newGame();
@@ -84,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Cheat code
         if (row == 0 && col == 0) {
-            isSecretOn = true;
+            //isSecretOn = true;
             mSecretCounter += 1;
 
             if (mSecretCounter == 5) {
@@ -93,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         else {
-            isSecretOn = false;
+            //isSecretOn = false;
             mSecretCounter = 0;
         }
 
@@ -139,4 +146,28 @@ public class MainActivity extends AppCompatActivity {
         displayPressCount(0);
         startGame();
     }
+
+    public void onChangeColorClick(View view) {
+        // Send the current color ID to ColorActivity
+        Intent intent = new Intent(this, ColorActivity.class);
+        intent.putExtra(ColorActivity.EXTRA_COLOR, mLightOnColorId);
+        mColorResultLauncher.launch(intent);
+    }
+
+    ActivityResultLauncher<Intent> mColorResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        if (data != null) {
+                            // Create the "on" button color from the chosen color ID from ColorActivity
+                            mLightOnColorId = data.getIntExtra(ColorActivity.EXTRA_COLOR, R.color.yellow);
+                            mLightOnColor = ContextCompat.getColor(MainActivity.this, mLightOnColorId);
+                            setButtonColors();
+                        }
+                    }
+                }
+            });
 }
